@@ -24,7 +24,8 @@ function load() {
             $.each(results, (index, value) => {
                 count++;
                 tableHtml +=
-                    `<tr>
+                    `
+                            <tr>
                                 <td>${value.MovieId}</td>
                                 <td>${value.Title}</td>
                                 <td>${value.IMDB}</td>
@@ -32,15 +33,10 @@ function load() {
                                 <td>${value.Rating}</td>
                                 <td>${value.ImageUrl}</td>
                                 <td>
-                                    <div class="stars">
-                                        <i onclick="one(${value.MovieId})" class="fa-solid fa-star"></i>
-                                        <i onclick="two(${value.MovieId})" class="fa-solid fa-star"></i>
-                                        <i onclick="tree(${value.MovieId})" class="fa-solid fa-star"></i>
-                                        <i onclick="four(${value.MovieId})" class="fa-solid fa-star"></i>
-                                        <i onclick="five(${value.MovieId})" class="fa-solid fa-star"></i>
-                                    </div>
-                                </th>
-                    </tr>`
+                                <div id='test_${value.MovieId}'><div class='stars'><i onclick='one(${value.MovieId}, event)' class='fa-solid fa-star active'></i><i onclick='two(${value.MovieId}, event)' class='fa-solid fa-star active'></i><i onclick='tree(${value.MovieId}, event)' class='fa-solid fa-star active'></i><i onclick='four(${value.MovieId}, event)' class='fa-solid fa-star active'></i><i onclick='five(${value.MovieId}, event)' class='fa-solid fa-star'></i></div></div>
+                                </td>
+                            </tr>
+                    `
             });
             tableHtml += "</table>";
             $("#movieWithIdList").html(tableHtml);
@@ -53,9 +49,9 @@ function load() {
         }
     });
 }
-
 load();
-let one = function (MovieId) {
+let one = function (MovieId, event) {
+    apply(MovieId);
     console.log("Birinci yıldıza tıkladın.");
     let values = {
         id: MovieId,
@@ -76,9 +72,11 @@ let one = function (MovieId) {
             });
         }
     });
+    
 };
 
-let two = function (MovieId) {
+let two = function (MovieId, event) {
+    apply(MovieId);
     console.log("İkinci yıldıza tıkladın.");
     let values = {
         id: MovieId,
@@ -89,6 +87,8 @@ let two = function (MovieId) {
         url: "/Default/UpdateMovie/" + MovieId,
         data: values,
         success: function (response) {
+            //const stars = document.getElementById(".stars i");
+            event.target.classList.add("active");
             //let result = jQuery.parseJSON(response);
             //apply();
             swal({
@@ -99,8 +99,10 @@ let two = function (MovieId) {
             });
         }
     });
+    
 };
-let tree = function (MovieId) {
+let tree = function (MovieId, event) {
+    apply(MovieId);
     console.log("Üçüncü yıldıza tıkladın.");
     let values = {
         id: MovieId,
@@ -111,6 +113,7 @@ let tree = function (MovieId) {
         url: "/Default/UpdateMovie/" + MovieId,
         data: values,
         success: function (response) {
+            event.target.classList.add("active");
             //let result = jQuery.parseJSON(response);
             //apply();
             swal({
@@ -121,8 +124,10 @@ let tree = function (MovieId) {
             });
         }
     });
+    
 };
-let four = function (MovieId) {
+let four = function (MovieId, event) {
+    apply(MovieId);
     console.log("Dördüncü yıldıza tıkladın.");
     let values = {
         id: MovieId,
@@ -133,6 +138,7 @@ let four = function (MovieId) {
         url: "/Default/UpdateMovie/" + MovieId,
         data: values,
         success: function (response) {
+            event.target.classList.add("active");
             //let result = jQuery.parseJSON(response);
             //apply();
             swal({
@@ -143,8 +149,10 @@ let four = function (MovieId) {
             });
         }
     });
+    
 };
-let five = function (MovieId) {
+let five = function (MovieId, event) {
+    apply(MovieId);
     console.log("Beşinci yıldıza tıkladın.");
     let values = {
         id: MovieId,
@@ -155,16 +163,7 @@ let five = function (MovieId) {
         url: "/Default/UpdateMovie/" + MovieId,
         data: values,
         success: function (response) {
-            //let result = jQuery.parseJSON(response);
-            const stars = document.querySelectorAll(".stars i");
-            stars.forEach((star, index1) => {
-                star.addEventListener("click", () => {
-                    stars.forEach((star, index2) => {
-                        index1 >= index2 ? star.classList.add("active") : star.classList.remove("active");
-                    });
-                });
-            });
-            //apply();
+            
             swal({
                 title: "Oylama başarılı.",
                 text: "Filme puan verdiniz. Verdiğiniz puan: " + values.rating,
@@ -173,21 +172,19 @@ let five = function (MovieId) {
             });
         }
     });
+    
 };
 
-stars.forEach((star, index1) => {
-    //console.log("index1" + index1);
-    // Add an event listener that runs a function when the "click" event is triggered
-    star.addEventListener("click", () => {
-        let starCount = 0;
-        // Loop through the "stars" NodeList Again
-        stars.forEach((star, index2) => {
-            starCount++;
-            //console.log("tıklanılan yıldız sayısı: " + star);
-            // Add the "active" class to the clicked star and any stars with a lower index
-            // and remove the "active" class from any stars with a higher index
-            index1 >= index2 ? star.classList.add("active") : star.classList.remove("active");
+function apply(MovieId) {
+    console.log(MovieId);
+    //const stars = document.querySelectorAll(".stars i");
+    const stars = document.getElementById("test_" + MovieId).querySelectorAll(".stars i");
+    stars.forEach((star, index1) => {
+        star.addEventListener("click", () => {
+            stars.forEach((star, index2) => {
+                index1 >= index2 ? star.classList.add("active") : star.classList.remove("active");
+            });
         });
-        // console.log(starCount);
     });
-});
+    
+}
